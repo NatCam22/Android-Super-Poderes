@@ -38,6 +38,7 @@ class MainActivity : ComponentActivity() {
                         val state by viewModel.uiState.collectAsState()
                         when(state){
                             is StateHeroList.SuccessGetHeros-> {
+                                println((state as StateHeroList.SuccessGetHeros).heroList[0].photo)
                                 HeroList(heros = (state as StateHeroList.SuccessGetHeros).heroList, modifier = Modifier.padding(it))
                             }
                             else -> {

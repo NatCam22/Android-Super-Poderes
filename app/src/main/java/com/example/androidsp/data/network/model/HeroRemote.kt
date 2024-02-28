@@ -15,5 +15,5 @@ fun List<HeroRemote>.toLocal(): List<HeroLocal> = this.map{
 }
 
 fun HeroRemote.toLocal(): HeroLocal = with(this){
-    HeroLocal(id, name, description ,"${photo.path}${photo.extension}", false)
+    HeroLocal(id, name, description ,"${photo.path}.${photo.extension}".replace("http", "https"), false)
 }

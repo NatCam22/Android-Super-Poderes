@@ -1,9 +1,9 @@
-package com.example.androidsp
+package com.example.androidsp.ui.heroListScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.androidsp.data.Repository
-import com.example.androidsp.domain.Hero
+import com.example.androidsp.domain.HeroLike
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,7 +49,7 @@ sealed class StateHeroList{
     class Idle: StateHeroList()
     class Error(val message: String): StateHeroList()
     object Loading: StateHeroList()
-    data class SuccessGetHeros(val heroList: List<Hero>): StateHeroList()
+    data class SuccessGetHeros(val heroList: List<HeroLike>): StateHeroList()
     object HeroSelected: StateHeroList()
-    class OnHerosUpdated(val heroList: List<Hero>) : StateHeroList()
+    class OnHerosUpdated(val heroList: List<HeroLike>) : StateHeroList()
 }

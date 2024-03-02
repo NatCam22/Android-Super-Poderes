@@ -4,6 +4,7 @@ import com.example.androidsp.data.local.LocalDataSource
 import com.example.androidsp.data.local.db.model.toUI
 import com.example.androidsp.data.network.NetworkDataSource
 import com.example.androidsp.data.network.model.toLocal
+import com.example.androidsp.data.network.model.toUI
 import com.example.androidsp.domain.Hero
 import javax.inject.Inject
 
@@ -27,5 +28,10 @@ class RepositoryImpl @Inject constructor(
             return localHeros.toUI()
         }
 
+    }
+
+    override suspend fun getHero(id: Int): Hero{
+        val remoteHero = networkDataSource.getHero(id)
+        return remoteHero.toUI()
     }
 }

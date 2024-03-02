@@ -2,6 +2,8 @@ package com.example.androidsp.data.network.api
 
 import com.example.androidsp.data.network.model.HeroRemote
 import com.example.androidsp.data.network.model.HeroResponse
+import com.example.androidsp.domain.Comic
+import com.example.androidsp.domain.Serie
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -12,31 +14,33 @@ interface HeroApi {
     suspend fun getHeros(
         @Query("apikey") apiKey: String,
         @Query("hash") hash: String,
-        @Query("ts") ts: Int): HeroResponse
+        @Query("ts") ts: Int): HeroResponse<HeroRemote>
 
-    @GET("/v1/public/characters/{id}?apikey={apikey}&hash={hash}&ts={ts}")
+    @GET("/v1/public/characters/{id}")
     suspend fun getHeroDetail(
-        @Path("apikey") apiKey: String,
-        @Path("hash") hash: String,
-        @Path("ts") ts: Int,
+        @Path("id") id: Int,
+        @Query("apikey") apiKey: String,
+        @Query("hash") hash: String,
+        @Query("ts") ts: Int): HeroResponse<HeroRemote>
         //The response should be fixed in order to always get a response with the RequestResponse Structure
-        @Path("id") id: String): HeroRemote
 
-    @GET("/v1/public/characters/{id}/comics?apikey={apikey}&hash={hash}&ts={ts}")
+
+    @GET("/v1/public/characters/{id}/comics")
     suspend fun getHeroComics(
-        @Path("apikey") apiKey: String,
-        @Path("hash") hash: String,
-        @Path("ts") ts: Int,
-        //TODO
-        @Path("id") id: String): HeroRemote
+        @Path("id") id: String,
+        @Query("apikey") apiKey: String,
+        @Query("hash") hash: String,
+        @Query("ts") ts: Int
+        ): HeroResponse<Comic>
 
-    @GET("/v1/public/characters/{id}/series?apikey={apikey}&hash={hash}&ts={ts}")
+    @GET("/v1/public/characters/{id}/series")
     suspend fun getHeroSeries(
-        @Path("apikey") apiKey: String,
-        @Path("hash") hash: String,
-        @Path("ts") ts: Int,
-        //TODO
-        @Path("id") id: String): HeroRemote
+        @Path("id") id: String,
+        @Query("apikey") apiKey: String,
+        @Query("hash") hash: String,
+        @Query("ts") ts: Int
+        ): HeroResponse<Serie>
+    
 
 
 }

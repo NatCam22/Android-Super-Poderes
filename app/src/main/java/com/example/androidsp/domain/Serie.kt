@@ -1,9 +1,7 @@
 package com.example.androidsp.domain
 
-data class Hero(
+data class Serie(
     override val id: Int,
     override val name: String,
-    override val photo: String,
-    val description: String,
-    val favorite: Boolean
+    override val photo: String
 ): HeroLike

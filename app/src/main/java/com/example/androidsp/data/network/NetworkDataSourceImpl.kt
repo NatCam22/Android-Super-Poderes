@@ -31,8 +31,8 @@ class NetworkDataSourceImpl @Inject constructor(private val api: HeroApi): Netwo
     }
 
     companion object {
-        const val API_KEY = "dffa33d6087a3474338accd6ba5258f3"
-        const val HASH = "43838211bf22aa3bafa3a71458523e36"
+        const val API_KEY = "e9a482d4a0d84cf2c3bc2da259a5ca25"
+        const val HASH = "f1e0760e353d6455aad5229930c701b3"
         const val TS = 1
     }
 }

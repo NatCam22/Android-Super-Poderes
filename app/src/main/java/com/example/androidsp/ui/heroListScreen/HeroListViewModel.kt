@@ -3,7 +3,7 @@ package com.example.androidsp.ui.heroListScreen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.androidsp.data.Repository
-import com.example.androidsp.domain.HeroLike
+import com.example.androidsp.domain.Hero
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,23 +24,18 @@ class HeroListViewModel @Inject constructor(val repository: Repository): ViewMod
     fun getHeroList(){
         viewModelScope.launch{
             _uiState.update { StateHeroList.Loading }
-
-            val result = runCatching {
-                withContext(Dispatchers.IO) {
-                    val heros = repository.getHeroList()
-                    println( heros)
-                    heros
+            withContext(Dispatchers.IO) {
+                repository.getHeroList().collect{heroList ->
+                    _uiState.update { StateHeroList.SuccessGetHeros(heroList) }
                 }
             }
-            println(result)
-            if (result.isSuccess) {
-                _uiState.update { StateHeroList.SuccessGetHeros(result.getOrThrow()) }
-            } else {
-                _uiState.update { StateHeroList.Error(result.exceptionOrNull()?.message.orEmpty()) }
-            }
+
         }
     }
 
+    fun setHeroFav(hero: Hero){
+        viewModelScope.launch(Dispatchers.IO) { repository.likeHero(hero) }
+    }
 
 
 }
@@ -49,7 +44,7 @@ sealed class StateHeroList{
     class Idle: StateHeroList()
     class Error(val message: String): StateHeroList()
     object Loading: StateHeroList()
-    data class SuccessGetHeros(val heroList: List<HeroLike>): StateHeroList()
+    data class SuccessGetHeros(val heroList: List<Hero>): StateHeroList()
     object HeroSelected: StateHeroList()
-    class OnHerosUpdated(val heroList: List<HeroLike>) : StateHeroList()
+    class OnHerosUpdated(val heroList: List<Hero>) : StateHeroList()
 }

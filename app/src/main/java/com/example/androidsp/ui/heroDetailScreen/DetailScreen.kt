@@ -18,6 +18,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -55,9 +56,15 @@ fun LoadingScreen(){
 }
 
 @Composable
-fun HeroDetailScreen(viewModel: DetailScreenViewModel = hiltViewModel(), id: Int, navigateToSeries: (Int) -> (Unit), navigateToComics: (Int) -> (Unit), navigateToDetail: (Int) -> (Unit)){
-    viewModel.getHero(id)
+fun HeroDetailScreen(viewModel: DetailScreenViewModel = hiltViewModel(), id: Int, navigateToSeries: (Int) -> (Unit), navigateToComics: (Int) -> (Unit), navigateToDetail: (Int) -> (Unit), navigateToHome: () -> Unit){
+    LaunchedEffect(id) {
+        viewModel.getHero(id)
+    }
     val state by viewModel.uiState.collectAsState()
+    ScaffoldDetail(state, id, navigateToSeries, navigateToComics, navigateToDetail, navigateToHome)
+}
+@Composable
+fun ScaffoldDetail(state: StateHeroDetail, id: Int, navigateToSeries: (Int) -> Unit, navigateToComics: (Int) -> Unit, navigateToDetail: (Int) -> Unit, navigateToHome: () -> Unit){
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
     Scaffold(
@@ -74,26 +81,32 @@ fun HeroDetailScreen(viewModel: DetailScreenViewModel = hiltViewModel(), id: Int
                     DrawerItems.DETAIL -> {navigateToDetail(id)}
                     DrawerItems.COMICS -> {navigateToComics(id)}
                     DrawerItems.SERIES -> {navigateToSeries(id)}
+                    DrawerItems.HOME -> {navigateToHome()}
                 }
                 scope.launch {scaffoldState.drawerState.close()}
             }
         }
-        ){
-        when(state){
-            is StateHeroDetail.SuccessGetHero-> {
+    ) {
+        when (state) {
+            is StateHeroDetail.SuccessGetHero -> {
                 println((state as StateHeroDetail.SuccessGetHero).hero.photo)
-                ImageScreen(hero = (state as StateHeroDetail.SuccessGetHero).hero, modifier = Modifier.padding(it))
+                ImageScreen(
+                    hero = (state as StateHeroDetail.SuccessGetHero).hero,
+                    modifier = Modifier.padding(it)
+                )
             }
+
             is StateHeroDetail.Loading -> {
                 LoadingScreen()
             }
+
             else -> {
 
             }
-    }
-
+        }
     }
 }
+
 @Composable
 fun TextShadow(textInput: String) {
     val offset = Offset(5.0f, 10.0f)

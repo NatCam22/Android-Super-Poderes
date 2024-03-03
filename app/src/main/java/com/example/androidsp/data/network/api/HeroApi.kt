@@ -12,7 +12,7 @@ import retrofit2.http.Query
 
 
 interface HeroApi {
-    @GET("/v1/public/characters")
+    @GET("/v1/public/characters?limit=100")
     suspend fun getHeros(
         @Query("apikey") apiKey: String,
         @Query("hash") hash: String,

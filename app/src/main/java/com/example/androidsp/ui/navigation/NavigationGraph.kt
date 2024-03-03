@@ -41,6 +41,9 @@ fun NavigationGraph(){
                 },
                 navigateToSeries = {
                     navController.navigate(Routes.Series.createRouteWithArgs(id))
+                },
+                navigateToHome = {
+                    navController.navigate(Routes.HeroListRoute.route)
                 })
         }
 
@@ -63,6 +66,9 @@ fun NavigationGraph(){
                 },
                 navigateToSeries = {
                     navController.navigate(Routes.Series.createRouteWithArgs(id))
+                },
+                navigateToHome = {
+                    navController.navigate(Routes.HeroListRoute.route)
                 })
         }
 
@@ -85,6 +91,9 @@ fun NavigationGraph(){
                 },
                 navigateToSeries = {
                     navController.navigate(Routes.Series.createRouteWithArgs(id))
+                },
+                navigateToHome = {
+                    navController.navigate(Routes.HeroListRoute.route)
                 })
         }
     }

@@ -41,7 +41,7 @@ import com.example.androidsp.ui.theme.PurpleGrey80
 import kotlinx.coroutines.launch
 
 @Composable
-fun HeroLikeListScreen(viewModel: DetailScreenViewModel = hiltViewModel(), id:Int, isSerie: Boolean, navigateToSeries: (Int) -> (Unit), navigateToComics: (Int) -> (Unit), navigateToDetail: (Int) -> (Unit)){
+fun HeroLikeListScreen(viewModel: DetailScreenViewModel = hiltViewModel(), id:Int, isSerie: Boolean, navigateToSeries: (Int) -> (Unit), navigateToComics: (Int) -> (Unit), navigateToDetail: (Int) -> (Unit), navigateToHome: () -> Unit){
     if(isSerie){
         viewModel.getSeries(id)
     }else{
@@ -65,6 +65,7 @@ fun HeroLikeListScreen(viewModel: DetailScreenViewModel = hiltViewModel(), id:In
                     DrawerItems.DETAIL -> {navigateToDetail(id)}
                     DrawerItems.COMICS -> {navigateToComics(id)}
                     DrawerItems.SERIES -> {navigateToSeries(id)}
+                    DrawerItems.HOME -> {navigateToHome()}
                 }
                 scope.launch {scaffoldState.drawerState.close()}
             }

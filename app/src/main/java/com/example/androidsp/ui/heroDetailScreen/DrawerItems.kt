@@ -1,6 +1,7 @@
 package com.example.androidsp.ui.heroDetailScreen
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.rounded.Book
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Tv
@@ -12,5 +13,6 @@ enum class DrawerItems (
 ) {
     SERIES(Icons.Rounded.Tv, "Series"),
     COMICS(Icons.Rounded.Book, "Comics"),
-    DETAIL(Icons.Rounded.Search, "Detalle")
+    DETAIL(Icons.Rounded.Search, "Detalle"),
+    HOME(Icons.Default.Home, "Home")
 }

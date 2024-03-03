@@ -35,6 +35,9 @@ fun CustomTopBar(title: String = "Detalle de héroe", onMenuClicked: () -> Unit)
     )
 }
 
+/*
+Componente no visto en clase: Drawer.
+ */
 @Composable
 fun CustomDrawer(items: List<DrawerItems>, onItemClick: (DrawerItems) -> Unit){
     Column(modifier = Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(30.dp)) {

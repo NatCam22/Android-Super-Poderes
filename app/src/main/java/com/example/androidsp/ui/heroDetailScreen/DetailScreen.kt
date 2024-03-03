@@ -12,16 +12,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,12 +40,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.example.androidsp.domain.Hero
+import kotlinx.coroutines.launch
 
 
 @Composable
 fun LoadingScreen(){
-
-    Box(contentAlignment = Alignment.Center){
+    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()){
         CircularProgressIndicator(
             modifier = Modifier
                 .height(40.dp)
@@ -53,25 +54,44 @@ fun LoadingScreen(){
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HeroDetailScreen(viewModel: DetailScreenViewModel = hiltViewModel(), id: Int, navigateToThingy: (Int) -> (Unit)){
+fun HeroDetailScreen(viewModel: DetailScreenViewModel = hiltViewModel(), id: Int, navigateToSeries: (Int) -> (Unit), navigateToComics: (Int) -> (Unit), navigateToDetail: (Int) -> (Unit)){
     viewModel.getHero(id)
     val state by viewModel.uiState.collectAsState()
-    Scaffold(){
+    val scaffoldState = rememberScaffoldState()
+    val scope = rememberCoroutineScope()
+    Scaffold(
+        scaffoldState = scaffoldState,
+        topBar = {
+            CustomTopBar {
+                scope.launch {scaffoldState.drawerState.open()}
+            }
+        },
+        drawerContent = {
+            CustomDrawer(
+                items = DrawerItems.values().toList()){
+                when(it){
+                    DrawerItems.DETAIL -> {navigateToDetail(id)}
+                    DrawerItems.COMICS -> {navigateToComics(id)}
+                    DrawerItems.SERIES -> {navigateToSeries(id)}
+                }
+                scope.launch {scaffoldState.drawerState.close()}
+            }
+        }
+        ){
+        when(state){
+            is StateHeroDetail.SuccessGetHero-> {
+                println((state as StateHeroDetail.SuccessGetHero).hero.photo)
+                ImageScreen(hero = (state as StateHeroDetail.SuccessGetHero).hero, modifier = Modifier.padding(it))
+            }
+            is StateHeroDetail.Loading -> {
+                LoadingScreen()
+            }
+            else -> {
 
+            }
     }
-    when(state){
-        is StateHeroDetail.SuccessGetHero-> {
-            println((state as StateHeroDetail.SuccessGetHero).hero.photo)
-            ImageScreen(hero = (state as StateHeroDetail.SuccessGetHero).hero, modifier = Modifier)
-        }
-        is StateHeroDetail.Loading -> {
-            LoadingScreen()
-        }
-        else -> {
 
-        }
     }
 }
 @Composable
@@ -106,7 +126,7 @@ fun DescriptionBox(name: String, description: String, modifier: Modifier){
             Spacer(modifier = Modifier.height(20.dp))
             Text(
                 text = description,
-                style = MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.body1,
                 color = Color.White,
                 textAlign = TextAlign.Justify)
         }

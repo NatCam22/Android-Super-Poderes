@@ -1,7 +1,9 @@
 package com.example.androidsp.data.network.api
 
+import com.example.androidsp.data.network.model.ComicRemote
 import com.example.androidsp.data.network.model.HeroRemote
 import com.example.androidsp.data.network.model.HeroResponse
+import com.example.androidsp.data.network.model.SerieRemote
 import com.example.androidsp.domain.Comic
 import com.example.androidsp.domain.Serie
 import retrofit2.http.GET
@@ -27,19 +29,19 @@ interface HeroApi {
 
     @GET("/v1/public/characters/{id}/comics")
     suspend fun getHeroComics(
-        @Path("id") id: String,
+        @Path("id") id: Int,
         @Query("apikey") apiKey: String,
         @Query("hash") hash: String,
         @Query("ts") ts: Int
-        ): HeroResponse<Comic>
+        ): HeroResponse<ComicRemote>
 
     @GET("/v1/public/characters/{id}/series")
     suspend fun getHeroSeries(
-        @Path("id") id: String,
+        @Path("id") id: Int,
         @Query("apikey") apiKey: String,
         @Query("hash") hash: String,
         @Query("ts") ts: Int
-        ): HeroResponse<Serie>
+        ): HeroResponse<SerieRemote>
     
 
 

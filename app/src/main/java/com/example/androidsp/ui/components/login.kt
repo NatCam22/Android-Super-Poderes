@@ -9,16 +9,15 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Button
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,7 +42,7 @@ fun LoginScreen(){
                 .border(shape = CircleShape, width = 2.dp, color = Color.Black)
                 .background(color = Color.Green))
         //Segundo componente> Titulo
-        Text(text = "Android Superpoderes", style = MaterialTheme.typography.headlineMedium)
+        Text(text = "Android Superpoderes", style = MaterialTheme.typography.h3)
         //Tercer componente> TextField> Reusable
 
         TextFieldReusable("", Icons.Default.Email, null, "Email")
@@ -56,7 +55,6 @@ fun LoginScreen(){
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TextFieldReusable(value: String, leadingIcon: ImageVector, trailingIcon: ImageVector?, label: String){
     TextField(

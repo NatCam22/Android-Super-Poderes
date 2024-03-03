@@ -5,7 +5,9 @@ import com.example.androidsp.data.local.db.model.toUI
 import com.example.androidsp.data.network.NetworkDataSource
 import com.example.androidsp.data.network.model.toLocal
 import com.example.androidsp.data.network.model.toUI
+import com.example.androidsp.domain.Comic
 import com.example.androidsp.domain.Hero
+import com.example.androidsp.domain.Serie
 import javax.inject.Inject
 
 class RepositoryImpl @Inject constructor(
@@ -33,5 +35,15 @@ class RepositoryImpl @Inject constructor(
     override suspend fun getHero(id: Int): Hero{
         val remoteHero = networkDataSource.getHero(id)
         return remoteHero.toUI()
+    }
+
+    override suspend fun getSeries(id: Int): List<Serie>{
+        val remoteSeries = networkDataSource.getSeries(id)
+        return remoteSeries.toUI()
+    }
+
+    override suspend fun getComics(id: Int): List<Comic>{
+        val remoteComics = networkDataSource.getComics(id)
+        return remoteComics.toUI()
     }
 }

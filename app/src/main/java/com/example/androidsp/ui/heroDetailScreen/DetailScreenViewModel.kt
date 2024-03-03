@@ -37,6 +37,42 @@ class DetailScreenViewModel @Inject constructor(private val repository: Reposito
             }
         }
     }
+
+    fun getSeries(id: Int){
+        viewModelScope.launch{
+            _uiState.update { StateHeroDetail.Loading }
+
+            val result = runCatching {
+                withContext(Dispatchers.IO){
+                    val hero = repository.getSeries(id)
+                    hero
+                }
+            }
+            if(result.isSuccess){
+                _uiState.update { StateHeroDetail.SuccessGetSeries(result.getOrThrow()) }
+            } else{
+                _uiState.update { StateHeroDetail.Error(result.exceptionOrNull()?.message.orEmpty()) }
+            }
+        }
+    }
+
+    fun getComics(id: Int){
+        viewModelScope.launch{
+            _uiState.update { StateHeroDetail.Loading }
+
+            val result = runCatching {
+                withContext(Dispatchers.IO){
+                    val hero = repository.getComics(id)
+                    hero
+                }
+            }
+            if(result.isSuccess){
+                _uiState.update { StateHeroDetail.SuccessGetComics(result.getOrThrow()) }
+            } else{
+                _uiState.update { StateHeroDetail.Error(result.exceptionOrNull()?.message.orEmpty()) }
+            }
+        }
+    }
 }
 
 sealed class StateHeroDetail{
@@ -45,6 +81,6 @@ sealed class StateHeroDetail{
     object Loading: StateHeroDetail()
     data class SuccessGetHero(val hero: Hero): StateHeroDetail()
     data class SuccessGetSeries(val series: List<HeroLike>): StateHeroDetail()
-    data class SuccessGetComics(val series: List<HeroLike>): StateHeroDetail()
+    data class SuccessGetComics(val comics: List<HeroLike>): StateHeroDetail()
     class OnHerosUpdated(val heroList: List<HeroLike>) : StateHeroDetail()
 }

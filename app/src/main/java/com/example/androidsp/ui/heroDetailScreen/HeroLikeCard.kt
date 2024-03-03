@@ -1,4 +1,4 @@
-package com.example.androidsp.ui.heroListScreen
+package com.example.androidsp.ui.heroDetailScreen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -11,15 +11,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,28 +34,76 @@ import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.example.androidsp.domain.Hero
 import com.example.androidsp.domain.HeroLike
+import com.example.androidsp.ui.heroListScreen.HeroListViewModel
+import com.example.androidsp.ui.heroListScreen.StateHeroList
 import com.example.androidsp.ui.theme.PurpleGrey40
+import com.example.androidsp.ui.theme.PurpleGrey80
+import kotlinx.coroutines.launch
 
 @Composable
-fun HeroListScreen(viewModel: HeroListViewModel = hiltViewModel(), navigateToDetail: (Int) -> Unit){
-    val state by viewModel.uiState.collectAsState()
-    when(state){
-        is StateHeroList.SuccessGetHeros-> {
-            println((state as StateHeroList.SuccessGetHeros).heroList[0].photo)
-            HeroList(heros = (state as StateHeroList.SuccessGetHeros).heroList, modifier = Modifier, navigateToDetail)
-        }
-        else -> {
+fun HeroLikeListScreen(viewModel: DetailScreenViewModel = hiltViewModel(), id:Int, isSerie: Boolean, navigateToSeries: (Int) -> (Unit), navigateToComics: (Int) -> (Unit), navigateToDetail: (Int) -> (Unit)){
+    if(isSerie){
+        viewModel.getSeries(id)
+    }else{
+        viewModel.getComics(id)
+    }
 
+    val state by viewModel.uiState.collectAsState()
+    val scaffoldState = rememberScaffoldState()
+    val scope = rememberCoroutineScope()
+    Scaffold(
+        scaffoldState = scaffoldState,
+        topBar = {
+            CustomTopBar {
+                scope.launch {scaffoldState.drawerState.open()}
+            }
+        },
+        drawerContent = {
+            CustomDrawer(
+                items = DrawerItems.values().toList()){
+                when(it){
+                    DrawerItems.DETAIL -> {navigateToDetail(id)}
+                    DrawerItems.COMICS -> {navigateToComics(id)}
+                    DrawerItems.SERIES -> {navigateToSeries(id)}
+                }
+                scope.launch {scaffoldState.drawerState.close()}
+            }
+        }
+    ) {
+        when (state) {
+            is StateHeroDetail.SuccessGetComics -> {
+                HeroLikeList(
+                    heros = (state as StateHeroDetail.SuccessGetComics).comics,
+                    modifier = Modifier.padding(it)
+                )
+            }
+
+            is StateHeroDetail.SuccessGetSeries -> {
+                HeroLikeList(
+                    heros = (state as StateHeroDetail.SuccessGetSeries).series,
+                    modifier = Modifier.padding(it)
+                )
+            }
+
+            is StateHeroDetail.Loading -> {
+                LoadingScreen()
+            }
+
+            else -> {
+
+            }
         }
     }
 }
 
 @Composable
-fun HeroCard(hero: HeroLike, modifier: Modifier, navigateToDetail: (Int) -> (Unit)){
+fun HeroLikeCard(hero: HeroLike, modifier: Modifier){
     Card(modifier = modifier
         .fillMaxWidth()
-        .padding(16.dp)
-        .clickable { navigateToDetail(hero.id) }) {
+        .padding(16.dp),
+        elevation = 4.dp,
+        shape = RoundedCornerShape(20.dp)
+        ) {
         var loading by remember{
             mutableStateOf(true)
         }
@@ -81,22 +133,21 @@ fun HeroCard(hero: HeroLike, modifier: Modifier, navigateToDetail: (Int) -> (Uni
 @Preview
 @Composable
 fun MyCard_Preview(){
-    HeroCard(Hero(111,"Goku", "", "", true), Modifier, ){
-
-    }
+    HeroLikeCard(Hero(111,"Goku", "", "", true), Modifier)
 }
+
 @Composable
-fun HeroList(heros: List<HeroLike>, modifier: Modifier, navigateToDetail: (Int) -> Unit){
-    LazyColumn(verticalArrangement = Arrangement.spacedBy(20.dp), modifier = modifier.background(color = PurpleGrey40).padding(16.dp)){
+fun HeroLikeList(heros: List<HeroLike>, modifier: Modifier){
+    LazyColumn(verticalArrangement = Arrangement.spacedBy(20.dp), modifier = modifier.background(color = PurpleGrey80).padding(16.dp)){
     items(heros){
-    HeroCard(Hero(it.id,it.name, it.photo, "",false), Modifier, navigateToDetail) }
+    HeroLikeCard(Hero(it.id,it.name, it.photo, "",false), Modifier) }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun HeroList_Preview(){
-    HeroList(generateUIHeros(100), Modifier, {})
+    HeroLikeList(generateUIHeros(100), Modifier)
 }
 
 private fun generateUIHeros(size: Int) = (0 until size).map { Hero(111,"name$it",  "photo$it","",true) }

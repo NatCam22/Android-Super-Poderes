@@ -1,7 +1,9 @@
 package com.example.androidsp.data.network
 
 import com.example.androidsp.data.network.api.HeroApi
+import com.example.androidsp.data.network.model.ComicRemote
 import com.example.androidsp.data.network.model.HeroRemote
+import com.example.androidsp.data.network.model.SerieRemote
 import com.example.androidsp.domain.Comic
 import com.example.androidsp.domain.Serie
 import javax.inject.Inject
@@ -18,13 +20,14 @@ class NetworkDataSourceImpl @Inject constructor(private val api: HeroApi): Netwo
         return hero.data.results[0]
     }
 
-    override suspend fun getSeries(id: Int): List<Serie> {
-        val series = api.getHeros(API_KEY, HASH, TS)
+    override suspend fun getSeries(id: Int): List<SerieRemote> {
+        val series = api.getHeroSeries(id,API_KEY, HASH, TS)
         return series.data.results
     }
 
-    override suspend fun getComics(id: Int): List<Comic> {
-        TODO("Not yet implemented")
+    override suspend fun getComics(id: Int): List<ComicRemote> {
+        val series = api.getHeroComics(id, API_KEY, HASH, TS)
+        return series.data.results
     }
 
     companion object {
